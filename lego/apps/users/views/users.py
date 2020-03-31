@@ -11,7 +11,7 @@ from lego.apps.jwt.handlers import get_jwt_token
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import CREATE, EDIT
 from lego.apps.users import constants
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import AbakusGroup, PhotoConsent, User
 from lego.apps.users.registrations import Registrations
 from lego.apps.users.serializers.registration import RegistrationConfirmationSerializer
 from lego.apps.users.serializers.users import (
@@ -20,6 +20,7 @@ from lego.apps.users.serializers.users import (
     Oauth2UserDataSerializer,
     PublicUserSerializer,
     PublicUserWithGroupsSerializer,
+    ChangePhotoConsentSerializer,
 )
 
 log = get_logger()
@@ -50,8 +51,8 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 return PublicUserWithGroupsSerializer
 
             if (
-                self.request.user.has_perm(EDIT, instance)
-                or self.request.user == instance
+                self.request.user.has_perm(EDIT, instance) or
+                self.request.user == instance
             ):
                 return MeSerializer
 
@@ -116,7 +117,8 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = User.objects.create_user(email=token_email, **serializer.validated_data)
+        user = User.objects.create_user(
+            email=token_email, **serializer.validated_data)
 
         user_group = AbakusGroup.objects.get(name=constants.USER_GROUP)
         user_group.add_user(user)
@@ -127,7 +129,8 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
         user = self.get_object()
-        serializer = self.get_serializer(user, data=request.data, partial=partial)
+        serializer = self.get_serializer(
+            user, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         is_abakus_member = serializer.validated_data.pop("is_abakus_member", None)
         with transaction.atomic():
@@ -171,5 +174,30 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 grade.remove_user(user)
             if newGrade is not None:
                 newGrade.add_user(user)
+
+        return Response(MeSerializer(user).data)
+
+    @action(
+        detail=True,
+        methods=["POST"],
+        permission_classes=[IsAuthenticated],
+        serializer_class=ChangePhotoConsentSerializer,
+    )
+    def change_photo_consent(self, request, *args, **kwargs):
+
+        if not request.user.has_perm(CREATE, PhotoConsent):
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = self.get_object()
+        newPhotoConsent = serializer.validated_data["photo_consent"]
+
+        with transaction.atomic():
+            photo_consent = user.photo_consent
+            if photo_consent is not None:
+                photo_consent.remove_user(user)
+            if newPhotoConsent is not None:
+                newPhotoConsent.add_user(user)
 
         return Response(MeSerializer(user).data)

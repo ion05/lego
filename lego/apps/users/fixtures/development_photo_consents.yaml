@@ -1,0 +1,23 @@
+- model: users.PhotoConsent
+  pk: 1
+  fields:
+    user: 3
+    semester: H19
+    domain: WEBSITE
+    is_consenting: true
+
+- model: users.PhotoConsent
+  pk: 2
+  fields:
+    user: 3
+    semester: H19
+    domain: SOCIAL_MEDIA
+    is_consenting: false
+
+- model: users.PhotoConsent
+  pk: 3
+  fields:
+    user: 3
+    semester: V20
+    domain: SOCIAL_MEDIA
+    is_consenting: true

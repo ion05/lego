@@ -3,13 +3,14 @@ from rest_framework import exceptions, serializers
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
 from lego.apps.users import constants
-from lego.apps.users.models import AbakusGroup, Penalty, User
+from lego.apps.users.models import AbakusGroup, Penalty, User, PhotoConsent
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
 from lego.apps.users.serializers.memberships import (
     MembershipSerializer,
     PastMembershipSerializer,
 )
 from lego.apps.users.serializers.penalties import PenaltySerializer
+from lego.apps.users.serializers.photo_consents import PhotoConsentSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 
 
@@ -18,7 +19,8 @@ class DetailedUserSerializer(serializers.ModelSerializer):
     abakus_groups = PublicAbakusGroupSerializer(many=True)
     past_memberships = PastMembershipSerializer(many=True)
     penalties = serializers.SerializerMethodField("get_valid_penalties")
-    profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
+    profile_picture = ImageField(required=False, options={
+                                 "height": 200, "width": 200})
 
     def get_valid_penalties(self, user):
         qs = Penalty.objects.valid().filter(user=user)
@@ -49,7 +51,8 @@ class DetailedUserSerializer(serializers.ModelSerializer):
 
 class PublicUserSerializer(serializers.ModelSerializer):
 
-    profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
+    profile_picture = ImageField(required=False, options={
+                                 "height": 200, "width": 200})
 
     class Meta:
         model = User
@@ -85,12 +88,14 @@ class AdministrateUserSerializer(PublicUserSerializer):
     """
 
     class Meta(PublicUserSerializer.Meta):
-        fields = PublicUserSerializer.Meta.fields + ("abakus_groups", "allergies")
+        fields = PublicUserSerializer.Meta.fields + \
+            ("abakus_groups", "allergies")
 
 
 class SearchUserSerializer(serializers.ModelSerializer):
 
-    profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
+    profile_picture = ImageField(required=False, options={
+                                 "height": 200, "width": 200})
 
     class Meta:
         model = User
@@ -120,7 +125,8 @@ class Oauth2UserDataSerializer(serializers.ModelSerializer):
 
     abakus_groups = PublicAbakusGroupSerializer(many=True)
     memberships = MembershipSerializer(many=True)
-    profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
+    profile_picture = ImageField(required=False, options={
+                                 "height": 200, "width": 200})
     is_student = serializers.SerializerMethodField()
     is_abakus_member = serializers.BooleanField()
 
@@ -163,6 +169,7 @@ class MeSerializer(serializers.ModelSerializer):
     is_student = serializers.SerializerMethodField()
     is_abakus_member = serializers.BooleanField()
     past_memberships = PastMembershipSerializer(many=True)
+    photo_consents = PhotoConsentSerializer(many=True)
 
     def get_user_ical_token(self, user):
         ical_token = ICalToken.objects.get_or_create(user=user)[0]
@@ -217,7 +224,11 @@ class MeSerializer(serializers.ModelSerializer):
             "past_memberships",
             "internal_email_address",
             "selected_theme",
+<<<<<<< HEAD
             "permissions_per_group",
+=======
+            "photo_consents",
+>>>>>>> Add initial backend support
         )
 
 
@@ -225,4 +236,11 @@ class ChangeGradeSerializer(serializers.Serializer):
     group = PrimaryKeyRelatedFieldNoPKOpt(
         allow_null=True,
         queryset=AbakusGroup.objects.all().filter(type=constants.GROUP_GRADE),
+    )
+
+
+class ChangePhotoConsentSerializer(serializers.Serializer):
+    photoConsent = PrimaryKeyRelatedFieldNoPKOpt(
+        allow_null=True,
+        queryset=PhotoConsent.objects.all(),
     )

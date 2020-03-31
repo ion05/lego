@@ -81,11 +81,13 @@ from lego.apps.users.views.users import UsersViewSet
 from lego.utils.views import SiteMetaViewSet
 
 router = routers.DefaultRouter()
-router.register(r"announcements", AnnouncementViewSet, base_name="announcements")
+router.register(r"announcements", AnnouncementViewSet,
+                base_name="announcements")
 router.register(r"articles", ArticlesViewSet)
 router.register(r"bdb", AdminCompanyViewSet, base_name="bdb")
 router.register(r"calendar-ical", ICalViewset, base_name="calendar-ical")
-router.register(r"calendar-token", ICalTokenViewset, base_name="calendar-token")
+router.register(r"calendar-token", ICalTokenViewset,
+                base_name="calendar-token")
 router.register(r"comments", CommentViewSet)
 router.register(r"companies", CompanyViewSet)
 router.register(
@@ -106,7 +108,8 @@ router.register(
 router.register(
     r"company-interests", CompanyInterestViewSet, base_name="company-interest"
 )
-router.register(r"company-semesters", SemesterViewSet, base_name="company-semester")
+router.register(r"company-semesters", SemesterViewSet,
+                base_name="company-semester")
 router.register(r"contact-form", ContactFormViewSet, base_name="contact-form")
 router.register(r"device-apns", APNSDeviceViewSet)
 router.register(r"device-gcm", GCMDeviceViewSet)
@@ -133,15 +136,18 @@ router.register(
 router.register(
     r"feed-notifications", NotificationsViewSet, base_name="feed-notifications"
 )
-router.register(r"feed-personal", PersonalFeedViewSet, base_name="feed-personal")
-router.register(r"feed-user/(?P<user_pk>\d+)", UserFeedViewSet, base_name="feed-user")
+router.register(r"feed-personal", PersonalFeedViewSet,
+                base_name="feed-personal")
+router.register(r"feed-user/(?P<user_pk>\d+)",
+                UserFeedViewSet, base_name="feed-user")
 router.register(r"files", FileViewSet)
 router.register(r"followers-company", FollowCompanyViewSet)
 router.register(r"followers-event", FollowEventViewSet)
 router.register(r"followers-user", FollowUserViewSet)
 router.register(r"frontpage", FrontpageViewSet, base_name="frontpage")
 router.register(r"galleries", GalleryViewSet)
-router.register(r"galleries/(?P<gallery_pk>\d+)/pictures", GalleryPictureViewSet)
+router.register(r"galleries/(?P<gallery_pk>\d+)/pictures",
+                GalleryPictureViewSet)
 router.register(r"groups", AbakusGroupViewSet)
 router.register(
     r"groups/(?P<group_pk>\d+)/memberships",
@@ -173,7 +179,8 @@ router.register(
     r"oauth2-applications", ApplicationViewSet, base_name="oauth2-applications"
 )
 router.register(r"pages", PageViewSet)
-router.register(r"password-change", ChangePasswordViewSet, base_name="password-change")
+router.register(r"password-change", ChangePasswordViewSet,
+                base_name="password-change")
 router.register(
     r"password-reset-perform",
     PasswordResetPerformViewSet,
@@ -189,12 +196,16 @@ router.register(r"podcasts", PodcastViewSet, base_name="podcasts")
 router.register(r"polls", PollViewSet, base_name="polls")
 router.register(r"quotes", QuoteViewSet)
 router.register(r"reactions", ReactionViewSet)
-router.register(r"restricted-mail", RestrictedMailViewSet, base_name="restricted-mail")
-router.register(r"search-autocomplete", AutocompleteViewSet, base_name="autocomplete")
+router.register(r"restricted-mail", RestrictedMailViewSet,
+                base_name="restricted-mail")
+router.register(r"search-autocomplete", AutocompleteViewSet,
+                base_name="autocomplete")
 router.register(r"search-search", SearchViewSet, base_name="search")
 router.register(r"site-meta", SiteMetaViewSet, base_name="site-meta")
-router.register(r"survey-results", SurveyTokenViewset, base_name="survey-results")
-router.register(r"survey-templates", SurveyTemplateViewSet, base_name="survey-template")
+router.register(r"survey-results", SurveyTokenViewset,
+                base_name="survey-results")
+router.register(r"survey-templates", SurveyTemplateViewSet,
+                base_name="survey-template")
 router.register(r"surveys", SurveyViewSet)
 router.register(
     r"surveys/(?P<survey_pk>\d+)/submissions", SubmissionViewSet, base_name="submission"

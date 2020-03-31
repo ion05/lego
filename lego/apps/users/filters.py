@@ -1,6 +1,6 @@
 from django_filters import CharFilter, FilterSet
 
-from lego.apps.users.models import AbakusGroup, Membership, MembershipHistory, Penalty
+from lego.apps.users.models import AbakusGroup, Membership, MembershipHistory, Penalty, PhotoConsent
 
 
 class MembershipFilterSet(FilterSet):
@@ -27,3 +27,9 @@ class PenaltyFilterSet(FilterSet):
     class Meta:
         model = Penalty
         fields = ("user", "source_event")
+
+
+class PhotoConsentFilterSet(FilterSet):
+    class Meta:
+        model = PhotoConsent
+        fields = ("user",)
